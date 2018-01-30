@@ -16,5 +16,5 @@ import retrofit2.http.Path;
 public interface API {
 
     @GET("users/{owner}")
-    Call<Owner> GetOwner(@Path("owner") String owner);
+    Call<Owner> getUser(@Path("owner") String owner);
 }

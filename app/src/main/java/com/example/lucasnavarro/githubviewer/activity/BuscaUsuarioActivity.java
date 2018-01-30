@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.example.lucasnavarro.githubviewer.R;
 import com.example.lucasnavarro.githubviewer.model.Owner;
 import com.example.lucasnavarro.githubviewer.service.API;
+import com.example.lucasnavarro.githubviewer.service.GitHubService;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,56 +37,9 @@ public class BuscaUsuarioActivity extends AppCompatActivity {
         loginUsuario = findViewById(R.id.editTextNomeUsuario);
         buttonBuscarUsuario = findViewById(R.id.buttonBuscarUsuario);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.github.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        API api = retrofit.create(API.class);
-        final Call<Owner> getOwner = api.GetOwner(loginUsuario.toString());
-
-        buttonBuscarUsuario.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getOwner.enqueue(new Callback<Owner>() {
-                    @Override
-                    public void onResponse(Call<Owner> call, Response<Owner> response) {
-                        if(response.isSuccessful()){
-                            Owner owner = response.body();
-                            String nomeUsuario = owner.getName();
-                            String usuarioAvatarUrl = owner.getAvatar_url();
-
-                            Intent intent = new Intent(BuscaUsuarioActivity.this, UsuarioActivity.class);
-                            intent.putExtra("nomeUsuario", nomeUsuario);
-                            intent.putExtra("usuarioAvatarUrl", usuarioAvatarUrl);
-                            startActivity(intent);
-
-                        } else {
-                            Toast.makeText(BuscaUsuarioActivity.this, "Usuário não encontrado", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Owner> call, Throwable t) {
-                        alertaErrroConexao();
-                    }
-                });
-            }
-        });
+        GitHubService gitHubService = new GitHubService();
+        gitHubService.requestUser("lerolero", this);
 
     }
 
-    private void alertaErrroConexao() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(BuscaUsuarioActivity.this);
-        builder.setTitle("Usuário não encontrado.");
-        builder.setMessage("Por favor verifique sua conexão com a internet.");
-        builder.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        builder.create().show();
-    }
 }
