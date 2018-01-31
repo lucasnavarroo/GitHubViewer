@@ -63,39 +63,3 @@ public class GitHubService extends BaseGitHubService {
     }
 }
 
-        /*Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.github.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        API api = retrofit.create(API.class);
-        final Call<Owner> getOwner = api.GetOwner(loginUsuario.toString());*/
-
-       /* buttonBuscarUsuario.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getOwner.enqueue(new Callback<Owner>() {
-                    @Override
-                    public void onResponse(Call<Owner> call, Response<Owner> response) {
-                        if(response.isSuccessful()){
-                            Owner owner = response.body();
-                            String nomeUsuario = owner.getName();
-                            String usuarioAvatarUrl = owner.getAvatar_url();
-
-                            Intent intent = new Intent(BuscaUsuarioActivity.this, UsuarioActivity.class);
-                            intent.putExtra("nomeUsuario", nomeUsuario);
-                            intent.putExtra("usuarioAvatarUrl", usuarioAvatarUrl);
-                            startActivity(intent);
-
-                        } else {
-                            Toast.makeText(BuscaUsuarioActivity.this, "Usuário não encontrado", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Owner> call, Throwable t) {
-                        alertaErrroConexao();
-                    }
-                });
-            }
-        }); */
