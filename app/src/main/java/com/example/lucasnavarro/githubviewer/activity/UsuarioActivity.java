@@ -1,7 +1,6 @@
 package com.example.lucasnavarro.githubviewer.activity;
 
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +17,6 @@ import com.example.lucasnavarro.githubviewer.event.RequestRepoEvent;
 import com.example.lucasnavarro.githubviewer.event.RequestRepoFailedEvent;
 import com.example.lucasnavarro.githubviewer.model.Repo;
 import com.example.lucasnavarro.githubviewer.service.GitHubService;
-import com.example.lucasnavarro.githubviewer.service.IRequestRepo;
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;

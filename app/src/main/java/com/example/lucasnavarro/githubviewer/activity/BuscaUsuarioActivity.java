@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,7 +16,7 @@ import com.example.lucasnavarro.githubviewer.event.RequestUserEvent;
 import com.example.lucasnavarro.githubviewer.event.RequestUserFailedEvent;
 import com.example.lucasnavarro.githubviewer.model.Owner;
 import com.example.lucasnavarro.githubviewer.service.GitHubService;
-import com.example.lucasnavarro.githubviewer.service.IRequestUser;
+
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
