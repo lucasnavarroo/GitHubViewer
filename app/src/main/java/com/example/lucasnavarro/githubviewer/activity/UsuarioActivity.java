@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import com.example.lucasnavarro.githubviewer.R;
 import com.example.lucasnavarro.githubviewer.adapter.AdapterRepositorios;
+import com.example.lucasnavarro.githubviewer.event.RequestRepoEvent;
+import com.example.lucasnavarro.githubviewer.event.RequestRepoFailedEvent;
 import com.example.lucasnavarro.githubviewer.model.Repo;
 import com.example.lucasnavarro.githubviewer.service.GitHubService;
 import com.example.lucasnavarro.githubviewer.service.IRequestRepo;
@@ -30,7 +32,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.List;
 
 @EActivity(R.layout.activity_usuario)
-public class UsuarioActivity extends BaseActivity implements IRequestRepo{
+public class UsuarioActivity extends BaseActivity{
 
     @ViewById
     protected TextView textViewNomeUsuario;
@@ -60,7 +62,7 @@ public class UsuarioActivity extends BaseActivity implements IRequestRepo{
         textViewNomeUsuario.setText(nomeUsuario);
 
         GitHubService gitHubService = new GitHubService();
-        gitHubService.requestRepo(UsuarioActivity.this, nomeLogin, this);
+        gitHubService.requestRepo(UsuarioActivity.this, nomeLogin);
 
         progressBarRepo.setVisibility(View.VISIBLE);
 
@@ -83,15 +85,13 @@ public class UsuarioActivity extends BaseActivity implements IRequestRepo{
         recyclerViewRepositorios.setLayoutManager(linearLayoutManager);
     }
 
-    @Override
-    public void requestRepoDeuCerto(List<Repo> repos) {
+    public void preparaRepositorios(List<Repo> repos) {
         AdapterRepositorios adapterRepositorios = new AdapterRepositorios(repos);
         recyclerViewRepositorios.setAdapter(adapterRepositorios);
         progressBarRepo.setVisibility(View.GONE);
     }
 
-    @Override
-    public void requestRepoDeuErrado() {
+    public void toastRepositorioVazio() {
         Toast.makeText(this, "Repositório vazio", Toast.LENGTH_SHORT).show();
         progressBarRepo.setVisibility(View.GONE);
     }
@@ -101,4 +101,9 @@ public class UsuarioActivity extends BaseActivity implements IRequestRepo{
         finish();
     }
 
+    @Subscribe
+    public void onEvent(RequestRepoEvent event) { preparaRepositorios(event.getRepos()); }
+
+    @Subscribe
+    public void onEvent(RequestRepoFailedEvent event) { toastRepositorioVazio(); }
 }

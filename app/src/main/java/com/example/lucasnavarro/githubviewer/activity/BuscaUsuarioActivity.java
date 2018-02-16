@@ -12,7 +12,9 @@ import android.widget.ProgressBar;
 
 import com.example.lucasnavarro.githubviewer.R;
 
+import com.example.lucasnavarro.githubviewer.event.AlertaErroConexaoEvent;
 import com.example.lucasnavarro.githubviewer.event.RequestUserEvent;
+import com.example.lucasnavarro.githubviewer.event.RequestUserFailedEvent;
 import com.example.lucasnavarro.githubviewer.model.Owner;
 import com.example.lucasnavarro.githubviewer.service.GitHubService;
 import com.example.lucasnavarro.githubviewer.service.IRequestUser;
@@ -26,7 +28,7 @@ import org.greenrobot.eventbus.Subscribe;
 import static android.support.design.widget.Snackbar.LENGTH_SHORT;
 
 @EActivity(R.layout.activity_busca_usuario)
-public class BuscaUsuarioActivity extends BaseActivity implements IRequestUser{
+public class BuscaUsuarioActivity extends BaseActivity{
 
     @ViewById
     protected EditText editTextLoginUsuario;
@@ -53,12 +55,7 @@ public class BuscaUsuarioActivity extends BaseActivity implements IRequestUser{
 
     public void requestUserService(){
         GitHubService gitHubService = new GitHubService();
-        gitHubService.requestUser(BuscaUsuarioActivity.this, String.valueOf(editTextLoginUsuario.getText()), this);
-    }
-
-    @Override
-    public void requestUserDeuCerto(Owner owner) {
-        preparaIntentUsuarioActivity(owner);
+        gitHubService.requestUser(String.valueOf(editTextLoginUsuario.getText()));
     }
 
     private void preparaIntentUsuarioActivity(Owner owner) {
@@ -75,14 +72,12 @@ public class BuscaUsuarioActivity extends BaseActivity implements IRequestUser{
         progressBar.setVisibility(View.GONE);
     }
 
-    @Override
-    public void requestUserDeuErrado() {
+    public void snackBarUsuarioNaoEncontrado() {
         Snackbar snackbar = Snackbar.make(editTextLoginUsuario, "Usuário não encontrado.", LENGTH_SHORT);
         snackbar.show();
         progressBar.setVisibility(View.GONE);
     }
 
-    @Override
     public void alertaErroConexao() {
             final AlertDialog.Builder builder = new AlertDialog.Builder(BuscaUsuarioActivity.this);
             builder.setTitle("Erro de conexão.");
@@ -101,5 +96,11 @@ public class BuscaUsuarioActivity extends BaseActivity implements IRequestUser{
     public void onEvent(RequestUserEvent event) {
         preparaIntentUsuarioActivity(event.getOwner());
     }
+
+    @Subscribe
+    public void onEvent(RequestUserFailedEvent event) { snackBarUsuarioNaoEncontrado(); }
+
+    @Subscribe
+    public void onEvent(AlertaErroConexaoEvent event) { alertaErroConexao(); }
 }
 
