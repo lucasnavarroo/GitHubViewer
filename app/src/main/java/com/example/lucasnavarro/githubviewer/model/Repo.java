@@ -6,9 +6,9 @@ import java.io.Serializable;
  * Created by Lucas Navarro on 28/01/2018.
  */
 
-public class Repo implements Serializable {
-    public String name;
+public class Repo {
     public String language;
+    public String name;
 
     public String getNameRepo() {
         return name;

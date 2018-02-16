@@ -1,5 +1,6 @@
 package com.example.lucasnavarro.githubviewer.model;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,7 +10,7 @@ import java.util.List;
 public class Owner implements Serializable {
     private String name;
     private String avatar_url;
-    private List<Repo> repos;
+    private String login;
 
     public String getName() {
         return name;
@@ -27,11 +28,11 @@ public class Owner implements Serializable {
         this.avatar_url = avatar_url;
     }
 
-    public List<Repo> getRepos() {
-        return repos;
+    public String getLogin() {
+        return login;
     }
 
-    public void setRepos(List<Repo> repos) {
-        this.repos = repos;
+    public void setLogin(String login) {
+        this.login = login;
     }
 }

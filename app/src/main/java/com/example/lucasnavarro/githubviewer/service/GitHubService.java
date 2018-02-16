@@ -1,75 +1,65 @@
 package com.example.lucasnavarro.githubviewer.service;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
 import com.example.lucasnavarro.githubviewer.activity.UsuarioActivity;
+import com.example.lucasnavarro.githubviewer.activity.UsuarioActivity_;
+import com.example.lucasnavarro.githubviewer.event.RequestUserEvent;
 import com.example.lucasnavarro.githubviewer.model.Owner;
 import com.example.lucasnavarro.githubviewer.model.Repo;
 
+import org.greenrobot.eventbus.EventBus;
 
-import java.io.Serializable;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
-/**
- * Created by Lucas Navarro on 30/01/2018.
- */
-
 public class GitHubService extends BaseGitHubService {
 
-    public void requestUser(final String nomeLogin, final Context context) {
+    public void requestUser(final Context context, String nomeLogin, final IRequestUser callbackIRequestUser) {
         getGithubAPI().getUser(nomeLogin).enqueue(new Callback<Owner>() {
             @Override
             public void onResponse(Call<Owner> call, Response<Owner> response) {
-                if(response.isSuccessful()){
+                if(response.isSuccessful()) {
                     Owner owner = response.body();
-                    String nomeUsuario = owner.getName();
-                    String usuarioAvatarUrl = owner.getAvatar_url();
-                    List<Repo> repos = owner.getRepos();
-
-                    Intent intent = new Intent(context, UsuarioActivity.class);
-                    intent.putExtra("nomeUsuario", nomeUsuario);
-                    intent.putExtra("usuarioAvatarUrl", usuarioAvatarUrl);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("repos", (Serializable) repos);
-                    intent.putExtras(bundle);
-
-                    context.startActivity(intent);
+                    RequestUserEvent requestUserEvent = new RequestUserEvent(owner);
+                    EventBus.getDefault().post(requestUserEvent);
+                    //callbackIRequestUser.requestUserDeuCerto(owner);
                 }
-
                 else {
-                    Toast.makeText(context, "Usuário não encontrado", Toast.LENGTH_SHORT).show();
+                  //  callbackIRequestUser.requestUserDeuErrado();
                 }
             }
 
             @Override
             public void onFailure(Call<Owner> call, Throwable t) {
-                alertaErrroConexao(context);
+                //callbackIRequestUser.alertaErroConexao();
             }
         });
     }
 
-    private void alertaErrroConexao(Context context) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Usuário não encontrado.");
-        builder.setMessage("Por favor verifique a sua conexão com a internet.");
-        builder.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+    public void requestRepo(final Context context, String nomeLogin, final IRequestRepo callbackIRequestRepo) {
+        getGithubAPI().getRepos(nomeLogin).enqueue(new Callback<List<Repo>>() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+            public void onResponse(Call<List<Repo>> call, Response<List<Repo>> response) {
+                if(response.isSuccessful()) {
+                    List<Repo> repos = response.body();
+                    callbackIRequestRepo.requestRepoDeuCerto(repos);
+                }
+                else {
+                    callbackIRequestRepo.requestRepoDeuErrado();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Repo>> call, Throwable t) {
+                Toast.makeText(context, "Erro conexão", Toast.LENGTH_SHORT).show();
             }
         });
-
-        builder.create().show();
     }
 }
 
